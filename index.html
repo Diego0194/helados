@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IceCream Tracker 🍦</title>
+    <style>
+        :root {
+            --bg-color: #f7f9fc;
+            --card-bg: #ffffff;
+            --primary-color: #ff7675;
+            --primary-hover: #ff5252;
+            --text-color: #2d3436;
+            --accent-color: #fdcb6e;
+            --border-radius: 20px;
+            --shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding-bottom: 60px;
+        }
+
+        header {
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+
+        .next-payer-section {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            color: #2d3436;
+            text-align: center;
+        }
+
+        .next-payer-section h2 {
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            opacity: 0.9;
+        }
+
+        .payer-avatars {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .avatar-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .avatar-box {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.3rem;
+            color: white;
+            text-transform: uppercase;
+            border: 3px solid white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background-size: cover;
+            background-position: center;
+            user-select: none;
+            transition: all 0.2s ease;
+        }
+
+        .avatar-name {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-color);
+            text-align: center;
+            margin-top: 4px;
+        }
+
+        /* --- ESTILOS DE ESTADÍSTICAS --- */
+        .stats-section h3 {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: #636e72;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .stat-row .mini-name {
+            width: 80px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .progress-bar-container {
+            flex-grow: 1;
+            background: #eee;
+            height: 12px;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: 6px;
+            width: 0%;
+            transition: width 0.6s cubic-bezier(0.1, 1, 0.1, 1);
+        }
+
+        .bar-consumed { background: linear-gradient(90deg, #ff7675, #ff8a8a); }
+        .bar-paid { background: linear-gradient(90deg, #2ecc71, #2eff86); }
+
+        .stat-value {
+            font-size: 0.85rem;
+            font-weight: bold;
+            width: 65px;
+            text-align: right;
+        }
+
+        .avg-card {
+            text-align: center;
+            padding: 15px;
+            background: #f1f2f6;
+            border-radius: 14px;
+            margin-top: 10px;
+        }
+
+        .avg-price {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--primary-color);
+        }
+
+        /* --- BOTONES --- */
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 5px 15px rgba(255, 118, 117, 0.3);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+            background-color: var(--primary-hover);
+        }
+
+        .btn-add-expense {
+            background: #2ed573;
+            box-shadow: 0 5px 15px rgba(46, 213, 115, 0.3);
+            position: fixed;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 32px);
+            max-width: 468px;
+            z-index: 99;
+        }
+
+        /* --- DESPLEGABLE / MODAL FORMULARIO --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        .form-panel {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 24px 24px 0 0;
+            max-height: 85vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #b2bec3;
+            padding: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 1.05rem;
+        }
+
+        .face-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px 12px;
+        }
+
+        .face-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .face-option input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .face-option.selected .avatar-box {
+            border-color: var(--primary-color);
+            transform: scale(1.08);
+            box-shadow: 0 0 12px rgba(255, 118, 117, 0.5);
+        }
+        .face-option.selected .avatar-name {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .face-option.checked .avatar-box {
+            border-color: #2ecc71;
+            transform: scale(1.08);
+            box-shadow: 0 0 12px rgba(46, 204, 113, 0.5);
+        }
+        .face-option.checked .avatar-name {
+            color: #2ecc71;
+            font-weight: bold;
+        }
+
+        .input-money {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 1.4rem;
+            border: 2px solid #dfe6e9;
+            border-radius: 14px;
+            outline: none;
+            text-align: center;
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+        .input-money:focus {
+            border-color: var(--primary-color);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            font-weight: bold;
+            color: #636e72;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .global-loading {
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #636e72;
+            margin-top: 40px;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 15px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="mainContainer" style="display: none;">
+        <header>
+            <h1>IceCream Tracker 🍦</h1>
+        </header>
+
+        <div class="card next-payer-section">
+            <h2>Próximo en pagar:</h2>
+            <div class="payer-avatars" id="nextPayerContainer">
+                <div class="avatar-wrapper">
+                    <span class="avatar-name">Calculando...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card stats-section">
+            <h3>📊 ¿Quién ha comido más helados?</h3>
+            <div id="consumedStatsContainer"></div>
+        </div>
+
+        <div class="card stats-section">
+            <h3>💰 ¿Quién ha pagado más total?</h3>
+            <div id="paidStatsContainer"></div>
+        </div>
+
+        <div class="card stats-section" style="text-align: center;">
+            <h3>🏷️ Precio medio por helado comido</h3>
+            <div class="avg-card">
+                <div class="avg-price" id="globalAvgPrice">0.00€</div>
+                <span style="font-size: 0.85rem; color:#636e72;">Calculado según coste total e historial real</span>
+            </div>
+        </div>
+
+        <button class="btn btn-add-expense" onclick="abrirFormulario()">
+            ➕ Añadir un gasto
+        </button>
+    </div>
+
+    <div class="modal-overlay" id="modalForm" onclick="cerrarFormularioExterna(event)">
+        <div class="card form-panel">
+            <div class="modal-header">
+                <h2>Añadir Nuevo Gasto 🍦</h2>
+                <button class="close-btn" onclick="cerrarFormulario()">✕</button>
+            </div>
+            
+            <div class="alert-success" id="successAlert">¡Compra guardada con éxito! 🎉</div>
+            
+            <form id="iceCreamForm" onsubmit="enviarDatos(event)">
+                <div class="form-group">
+                    <label>1. ¿Quién ha pagado?</label>
+                    <div class="face-grid" id="payerGrid"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="amount">2. ¿Cuánto ha costado en total? (€)</label>
+                    <input type="number" id="amount" step="0.01" min="0" class="input-money" placeholder="0.00" required inputmode="decimal">
+                </div>
+
+                <div class="form-group">
+                    <label>3. ¿Para quién es? (Selección múltiple)</label>
+                    <div class="face-grid" id="consumersGrid"></div>
+                </div>
+
+                <div class="loading" id="loader">Enviando a Google Sheets... 🚀</div>
+                <button type="submit" class="btn" style="background-color: #2ecc71; box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);">
+                    Confirmar y Guardar ✨
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="global-loading" id="globalLoader">
+        🍦 Iniciando IceCream Tracker...<br><span style="font-size: 0.9rem; font-weight: normal; color: #b2bec3;">Cargando datos reales desde Google Sheets...</span>
+    </div>
+
+    <script>
+        // CONFIGURACIÓN DE TU GOOGLE SHEETS
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzTcL6ILV4SwZHaOdGrz5Qc6e0fStdTHA2nVkgnn80fQXXqvxqJcyCa2W4y3-V0mfl9/exec";
+
+        let AMIGOS = [];
+        let pagadorSeleccionado = null;
+
+        const COLORES = [
+            'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)',
+            'linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)',
+            'linear-gradient(135deg, #ffcf71 0%, #2376dd 100%)',
+            'linear-gradient(135deg, #70f570 0%, #49c628 100%)',
+            'linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%)',
+            'linear-gradient(135deg, #fccb90 0%, #d5d114 100%)',
+            'linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)',
+            'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
+        ];
+
+        window.addEventListener('DOMContentLoaded', () => {
+            inicializarApp();
+        });
+
+        function inicializarApp() {
+            if (WEB_APP_URL === "TU_URL_DE_GOOGLE_APPS_SCRIPT_AQUI" || WEB_APP_URL.trim() === "") {
+                document.getElementById('globalLoader').innerHTML = "⚠️ <strong>Falta configurar la URL</strong>";
+                return;
+            }
+
+            let urlLimpia = WEB_APP_URL.trim();
+            urlLimpia += urlLimpia.includes('?') ? '&action=getInitData' : '?action=getInitData';
+
+            fetch(urlLimpia)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) throw new Error(data.error);
+                    
+                    AMIGOS = data.friends;
+                    document.getElementById('globalLoader').style.display = 'none';
+                    document.getElementById('mainContainer').style.display = 'flex';
+                    
+                    renderGrids();
+                    mostrarSiguientePagador(data.nextPayers);
+                    generarEstadisticasReal(data);
+                })
+                .catch(err => {
+                    document.getElementById('globalLoader').innerHTML = "❌ Error al conectar con Google Sheets.<br><span style='font-size:0.8rem; color:red;'>" + err.message + "</span>";
+                });
+        }
+
+        function abrirFormulario() {
+            document.getElementById('modalForm').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function cerrarFormulario() {
+            document.getElementById('modalForm').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function cerrarFormularioExterna(e) {
+            if (e.target.id === 'modalForm') cerrarFormulario();
+        }
+
+        // --- RENDERIZADO DE GRÁFICOS CON MÉTRICAS REALES ---
+        function generarEstadisticasReal(data) {
+            const amigosConDatos = data.friends;
+            
+            // Buscar los valores máximos actuales para calcular los anchos proporcionales de las barras
+            const maxConsumed = Math.max(...amigosConDatos.map(a => a.totalConsumed), 1);
+            const maxPaid = Math.max(...amigosConDatos.map(a => a.totalPaid), 1);
+
+            let consumedHTML = '';
+            let paidHTML = '';
+
+            // 1. Renderizar Gráfico de Helados Comidos
+            amigosConDatos.forEach(amigo => {
+                let pctConsumed = (amigo.totalConsumed / maxConsumed) * 100;
+                consumedHTML += `
+                    <div class="stat-row">
+                        <span class="mini-name">${amigo.name}</span>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar bar-consumed" style="width: ${pctConsumed}%"></div>
+                        </div>
+                        <span class="stat-value">${amigo.totalConsumed} ud.</span>
+                    </div>`;
+
+            // 2. Renderizar Gráfico de Dinero Pagado
+                let pctPaid = (amigo.totalPaid / maxPaid) * 100;
+                paidHTML += `
+                    <div class="stat-row">
+                        <span class="mini-name">${amigo.name}</span>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar bar-paid" style="width: ${pctPaid}%"></div>
+                        </div>
+                        <span class="stat-value">${amigo.totalPaid.toFixed(2)}€</span>
+                    </div>`;
+            });
+
+            document.getElementById('consumedStatsContainer').innerHTML = consumedHTML;
+            document.getElementById('paidStatsContainer').innerHTML = paidHTML;
+            
+            // 3. Mostrar Precio Medio Global por helado comido de forma fidedigna
+            const totalInvertido = data.globalTotalPaid || 0;
+            const totalHelados = data.globalTotalHelados || 0;
+            const avgGlobal = totalHelados > 0 ? (totalInvertido / totalHelados) : 0;
+            
+            document.getElementById('globalAvgPrice').innerText = `${avgGlobal.toFixed(2)}€`;
+        }
+
+        function crearAvatarHTML(amigo) {
+            const inicial = amigo.name.trim().charAt(0);
+            const colorIndex = (amigo.id.length + inicial.charCodeAt(0)) % COLORES.length;
+            const estiloFondo = amigo.img && amigo.img.startsWith('http') 
+                ? `background-image: url('${amigo.img}')` 
+                : `background: ${COLORES[colorIndex]}`;
+
+            return `<div class="avatar-box" style="${estiloFondo}">${amigo.img && amigo.img.startsWith('http') ? '' : inicial}</div>`;
+        }
+
+        function renderGrids() {
+            const payerGrid = document.getElementById('payerGrid');
+            const consumersGrid = document.getElementById('consumersGrid');
+
+            payerGrid.innerHTML = '';
+            consumersGrid.innerHTML = '';
+
+            AMIGOS.forEach(amigo => {
+                const payerDiv = document.createElement('div');
+                payerDiv.className = 'face-option';
+                payerDiv.onclick = () => seleccionarPagador(amigo.id, payerDiv);
+                payerDiv.innerHTML = `
+                    ${crearAvatarHTML(amigo)}
+                    <span class="avatar-name">${amigo.name}</span>
+                `;
+                payerGrid.appendChild(payerDiv);
+
+                const consumerLabel = document.createElement('label');
+                consumerLabel.className = 'face-option';
+                consumerLabel.innerHTML = `
+                    <input type="checkbox" name="consumers" value="${amigo.id}" onchange="toggleConsumidor(this)">
+                    ${crearAvatarHTML(amigo)}
+                    <span class="avatar-name">${amigo.name}</span>
+                `;
+                consumersGrid.appendChild(consumerLabel);
+            });
+        }
+
+        function seleccionarPagador(id, element) {
+            document.querySelectorAll('#payerGrid .face-option').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+            pagadorSeleccionado = id;
+        }
+
+        function toggleConsumidor(input) {
+            const wrapper = input.parentElement;
+            if (input.checked) {
+                wrapper.classList.add('checked');
+            } else {
+                wrapper.classList.remove('checked');
+            }
+        }
+
+        function enviarDatos(e) {
+            e.preventDefault();
+
+            if (!pagadorSeleccionado) {
+                alert("Por favor, selecciona quién ha pagado.");
+                return;
+            }
+
+            const amount = parseFloat(document.getElementById('amount').value);
+            const checkboxes = document.querySelectorAll('input[name="consumers"]:checked');
+            const paraQuien = Array.from(checkboxes).map(cb => cb.value);
+
+            if (paraQuien.length === 0) {
+                alert("Por favor, selecciona para quién es el helado.");
+                return;
+            }
+
+            const data = {
+                action: "addPurchase",
+                payer: pagadorSeleccionado,
+                amount: amount,
+                consumers: paraQuien
+            };
+
+            const loader = document.getElementById('loader');
+            loader.style.display = 'block';
+
+            fetch(WEB_APP_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            })
+            .then(() => {
+                loader.style.display = 'none';
+                document.getElementById('successAlert').style.display = 'block';
+                document.getElementById('iceCreamForm').reset();
+                
+                document.querySelectorAll('.face-option').forEach(el => {
+                    el.classList.remove('selected');
+                    el.classList.remove('checked');
+                });
+                pagadorSeleccionado = null;
+                
+                setTimeout(() => {
+                    document.getElementById('successAlert').style.display = 'none';
+                    cerrarFormulario();
+                    recargarDatosCompletos();
+                }, 1200);
+            })
+            .catch(err => {
+                loader.style.display = 'none';
+                alert("Error al guardar: " + err.message);
+            });
+        }
+
+        function mostrarSiguientePagador(nextPayersList) {
+            const container = document.getElementById('nextPayerContainer');
+            container.innerHTML = '';
+            
+            if (nextPayersList && nextPayersList.length > 0) {
+                nextPayersList.forEach(id => {
+                    const amigo = AMIGOS.find(a => a.id === id);
+                    if (amigo) {
+                        container.innerHTML += `
+                            <div class="avatar-wrapper">
+                                ${crearAvatarHTML(amigo)}
+                                <span class="avatar-name" style="color: #2d3436; font-weight: bold;">${amigo.name}</span>
+                            </div>
+                        `;
+                    }
+                });
+            } else {
+                container.innerHTML = '<span>Sin datos suficientes</span>';
+            }
+        }
+
+        function recargarDatosCompletos() {
+            let urlLimpia = WEB_APP_URL.trim();
+            urlLimpia += urlLimpia.includes('?') ? '&action=getInitData' : '?action=getInitData';
+
+            fetch(urlLimpia)
+                .then(response => response.json())
+                .then(data => {
+                    mostrarSiguientePagador(data.nextPayers);
+                    generarEstadisticasReal(data);
+                });
+        }
+    </script>
+</body>
+</html>
