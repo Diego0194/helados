@@ -112,14 +112,18 @@
             transition: all 0.2s ease;
         }
 
-        .avatar-name {
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: var(--text-color);
-            text-align: center;
-            margin-top: 4px;
-        }
-
+		.avatar-name {
+			display: block;
+			width: 100%;
+			text-align: center;
+			margin-top: 4px;
+			font-weight: 600;
+			font-size: 0.85rem;
+			color: var(--text-color);
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
         /* --- ESTILOS DE ESTADÍSTICAS --- */
         .stats-section h3 {
             font-size: 1.1rem;
@@ -283,20 +287,26 @@
             gap: 16px 12px;
         }
 
-        .face-option {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-            position: relative;
-        }
+.face-option {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer;
+    position: relative;
+    width: 100%;
+}
 
-        .face-option input {
-            position: absolute;
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
+.face-option input {
+    position: absolute !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden;
+    pointer-events: none;
+}
 
         .face-option.selected .avatar-box {
             border-color: var(--primary-color);
@@ -564,25 +574,25 @@
             payerGrid.innerHTML = '';
             consumersGrid.innerHTML = '';
 
-            AMIGOS.forEach(amigo => {
-                const payerDiv = document.createElement('div');
-                payerDiv.className = 'face-option';
-                payerDiv.onclick = () => seleccionarPagador(amigo.id, payerDiv);
-                payerDiv.innerHTML = `
-                    ${crearAvatarHTML(amigo)}
-                    <span class="avatar-name">${amigo.name}</span>
-                `;
-                payerGrid.appendChild(payerDiv);
+		AMIGOS.forEach(amigo => {
+			const payerDiv = document.createElement('div');
+			payerDiv.className = 'face-option';
+			payerDiv.onclick = () => seleccionarPagador(amigo.id, payerDiv);
+			payerDiv.innerHTML = `
+				${crearAvatarHTML(amigo)}
+				<span class="avatar-name">${amigo.name}</span>
+			`;
+			payerGrid.appendChild(payerDiv);
 
-                const consumerLabel = document.createElement('label');
-                consumerLabel.className = 'face-option';
-                consumerLabel.innerHTML = `
-                    <input type="checkbox" name="consumers" value="${amigo.id}" onchange="toggleConsumidor(this)">
-                    ${crearAvatarHTML(amigo)}
-                    <span class="avatar-name">${amigo.name}</span>
-                `;
-                consumersGrid.appendChild(consumerLabel);
-            });
+			const consumerLabel = document.createElement('label');
+			consumerLabel.className = 'face-option';
+			consumerLabel.innerHTML = `
+				<input type="checkbox" name="consumers" value="${amigo.id}" onchange="toggleConsumidor(this)">
+				${crearAvatarHTML(amigo)}
+				<span class="avatar-name">${amigo.name}</span>
+			`;
+			consumersGrid.appendChild(consumerLabel);
+		});
         }
 
         function seleccionarPagador(id, element) {
