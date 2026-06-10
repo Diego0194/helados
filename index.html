@@ -112,18 +112,19 @@
             transition: all 0.2s ease;
         }
 
-		.avatar-name {
-			display: block;
-			width: 100%;
-			text-align: center;
-			margin-top: 4px;
-			font-weight: 600;
-			font-size: 0.85rem;
-			color: var(--text-color);
-			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
-		}
+        .avatar-name {
+            display: block;
+            width: 100%;
+            text-align: center;
+            margin-top: 4px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-color);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
         /* --- ESTILOS DE ESTADÍSTICAS --- */
         .stats-section h3 {
             font-size: 1.1rem;
@@ -226,6 +227,14 @@
             z-index: 99;
         }
 
+        .btn-roulette {
+            background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4);
+            margin-top: 5px;
+            padding: 12px 20px;
+            font-size: 1rem;
+        }
+
         /* --- DESPLEGABLE / MODAL FORMULARIO --- */
         .modal-overlay {
             display: none;
@@ -238,6 +247,11 @@
             align-items: flex-end;
         }
 
+        .modal-overlay.modal-centered {
+            align-items: center;
+            padding: 20px;
+        }
+
         .form-panel {
             width: 100%;
             max-width: 500px;
@@ -247,9 +261,19 @@
             animation: slideUp 0.3s ease-out;
         }
 
+        .modal-centered .form-panel {
+            border-radius: 24px;
+            animation: fadeIn 0.3s ease-out;
+        }
+
         @keyframes slideUp {
             from { transform: translateY(100%); }
             to { transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         .modal-header {
@@ -287,26 +311,26 @@
             gap: 16px 12px;
         }
 
-.face-option {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    cursor: pointer;
-    position: relative;
-    width: 100%;
-}
+        .face-option {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            cursor: pointer;
+            position: relative;
+            width: 100%;
+        }
 
-.face-option input {
-    position: absolute !important;
-    opacity: 0 !important;
-    width: 0 !important;
-    height: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow: hidden;
-    pointer-events: none;
-}
+        .face-option input {
+            position: absolute !important;
+            opacity: 0 !important;
+            width: 0 !important;
+            height: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: hidden;
+            pointer-events: none;
+        }
 
         .face-option.selected .avatar-box {
             border-color: var(--primary-color);
@@ -370,6 +394,51 @@
             margin-bottom: 15px;
             display: none;
         }
+
+        /* --- ESTILOS ESPECÍFICOS DE LA RULETA --- */
+        .roulette-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 0;
+            position: relative;
+        }
+
+        .wheel-wrapper {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            margin-bottom: 20px;
+        }
+
+        .wheel-pointer {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 25px solid #ff7675;
+            z-index: 10;
+            filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.15));
+        }
+
+        canvas #canvasWheel {
+            border-radius: 50%;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        }
+
+        #rouletteResult {
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-align: center;
+            min-height: 35px;
+            margin-top: 10px;
+            color: #2d3436;
+        }
     </style>
 </head>
 <body>
@@ -385,6 +454,9 @@
                 <div class="avatar-wrapper">
                     <span class="avatar-name">Calculando...</span>
                 </div>
+            </div>
+            <div id="rouletteButtonContainer" style="margin-top: 15px; display: none;">
+                <button class="btn btn-roulette" onclick="abrirRuleta()">🎰 Ruleta para pagar</button>
             </div>
         </div>
 
@@ -444,16 +516,35 @@
         </div>
     </div>
 
+    <div class="modal-overlay modal-centered" id="modalRoulette" onclick="cerrarRuletaExterna(event)">
+        <div class="card form-panel">
+            <div class="modal-header">
+                <h2>🎰 Ruleta de Desempate</h2>
+                <button class="close-btn" onclick="cerrarRuleta()">✕</button>
+            </div>
+            <div class="roulette-container">
+                <div class="wheel-wrapper">
+                    <div class="wheel-pointer"></div>
+                    <canvas id="canvasWheel" width="280" height="280"></canvas>
+                </div>
+                <button class="btn" id="btnSpin" onclick="girarRuleta()" style="background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);">🎉 ¡Girar Ruleta!</button>
+                <div id="rouletteResult"></div>
+            </div>
+        </div>
+    </div>
+
     <div class="global-loading" id="globalLoader">
         🍦 Iniciando IceCream Tracker...<br><span style="font-size: 0.9rem; font-weight: normal; color: #b2bec3;">Cargando datos reales desde Google Sheets...</span>
     </div>
 
     <script>
-        // CONFIGURACIÓN DE TU GOOGLE SHEETS
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzTcL6ILV4SwZHaOdGrz5Qc6e0fStdTHA2nVkgnn80fQXXqvxqJcyCa2W4y3-V0mfl9/exec";
+        // URL DE TU NUEVO GOOGLE APPS SCRIPT CONFIGURADA
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyUy4_fP-opOyxyjukMEvVvMr6bqJ8_LQStG4hXUrnHOvaMcu-tLLzCsrns6_-hG8C3/exec";
 
         let AMIGOS = [];
+        let EMPATADOS = []; 
         let pagadorSeleccionado = null;
+        let ruletaGirando = false;
 
         const COLORES = [
             'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)',
@@ -465,6 +556,8 @@
             'linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)',
             'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
         ];
+
+        const COLORES_RULETA = ['#ff7675', '#74b9ff', '#2ecc71', '#fdcb6e', '#a29bfe', '#e84393', '#00cec9', '#ffb142'];
 
         window.addEventListener('DOMContentLoaded', () => {
             inicializarApp();
@@ -511,18 +604,35 @@
             if (e.target.id === 'modalForm') cerrarFormulario();
         }
 
+        // --- FUNCIONES DE CONTROL DE LA RULETA ---
+        function abrirRuleta() {
+            if (EMPATADOS.length < 2) return;
+            document.getElementById('modalRoulette').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            document.getElementById('rouletteResult').innerText = "¿Quién pagará hoy? 🤔";
+            dibujarRuleta(0);
+        }
+
+        function cerrarRuleta() {
+            if (ruletaGirando) return; 
+            document.getElementById('modalRoulette').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function cerrarRuletaExterna(e) {
+            if (e.target.id === 'modalRoulette') cerrarRuleta();
+        }
+
         // --- RENDERIZADO DE GRÁFICOS CON MÉTRICAS REALES ---
         function generarEstadisticasReal(data) {
             const amigosConDatos = data.friends;
             
-            // Buscar los valores máximos actuales para calcular los anchos proporcionales de las barras
             const maxConsumed = Math.max(...amigosConDatos.map(a => a.totalConsumed), 1);
             const maxPaid = Math.max(...amigosConDatos.map(a => a.totalPaid), 1);
 
             let consumedHTML = '';
             let paidHTML = '';
 
-            // 1. Renderizar Gráfico de Helados Comidos
             amigosConDatos.forEach(amigo => {
                 let pctConsumed = (amigo.totalConsumed / maxConsumed) * 100;
                 consumedHTML += `
@@ -534,7 +644,6 @@
                         <span class="stat-value">${amigo.totalConsumed} ud.</span>
                     </div>`;
 
-            // 2. Renderizar Gráfico de Dinero Pagado
                 let pctPaid = (amigo.totalPaid / maxPaid) * 100;
                 paidHTML += `
                     <div class="stat-row">
@@ -549,7 +658,6 @@
             document.getElementById('consumedStatsContainer').innerHTML = consumedHTML;
             document.getElementById('paidStatsContainer').innerHTML = paidHTML;
             
-            // 3. Mostrar Precio Medio Global por helado comido de forma fidedigna
             const totalInvertido = data.globalTotalPaid || 0;
             const totalHelados = data.globalTotalHelados || 0;
             const avgGlobal = totalHelados > 0 ? (totalInvertido / totalHelados) : 0;
@@ -560,11 +668,12 @@
         function crearAvatarHTML(amigo) {
             const inicial = amigo.name.trim().charAt(0);
             const colorIndex = (amigo.id.length + inicial.charCodeAt(0)) % COLORES.length;
-            const estiloFondo = amigo.img && amigo.img.startsWith('http') 
-                ? `background-image: url('${amigo.img}')` 
-                : `background: ${COLORES[colorIndex]}`;
+            const estiloFondoFallback = `background: ${COLORES[colorIndex]}`;
 
-            return `<div class="avatar-box" style="${estiloFondo}">${amigo.img && amigo.img.startsWith('http') ? '' : inicial}</div>`;
+            return `<div class="avatar-box" style="${estiloFondoFallback}">
+                        <img src="media/${amigo.id}.jpg" style="width:100%; height:100%; border-radius:50%; object-fit:cover;" 
+                             onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('beforeend', '${inicial}');"/>
+                    </div>`;
         }
 
         function renderGrids() {
@@ -574,25 +683,25 @@
             payerGrid.innerHTML = '';
             consumersGrid.innerHTML = '';
 
-		AMIGOS.forEach(amigo => {
-			const payerDiv = document.createElement('div');
-			payerDiv.className = 'face-option';
-			payerDiv.onclick = () => seleccionarPagador(amigo.id, payerDiv);
-			payerDiv.innerHTML = `
-				${crearAvatarHTML(amigo)}
-				<span class="avatar-name">${amigo.name}</span>
-			`;
-			payerGrid.appendChild(payerDiv);
+            AMIGOS.forEach(amigo => {
+                const payerDiv = document.createElement('div');
+                payerDiv.className = 'face-option';
+                payerDiv.onclick = () => seleccionarPagador(amigo.id, payerDiv);
+                payerDiv.innerHTML = `
+                    ${crearAvatarHTML(amigo)}
+                    <span class="avatar-name">${amigo.name}</span>
+                `;
+                payerGrid.appendChild(payerDiv);
 
-			const consumerLabel = document.createElement('label');
-			consumerLabel.className = 'face-option';
-			consumerLabel.innerHTML = `
-				<input type="checkbox" name="consumers" value="${amigo.id}" onchange="toggleConsumidor(this)">
-				${crearAvatarHTML(amigo)}
-				<span class="avatar-name">${amigo.name}</span>
-			`;
-			consumersGrid.appendChild(consumerLabel);
-		});
+                const consumerLabel = document.createElement('label');
+                consumerLabel.className = 'face-option';
+                consumerLabel.innerHTML = `
+                    <input type="checkbox" name="consumers" value="${amigo.id}" onchange="toggleConsumidor(this)">
+                    ${crearAvatarHTML(amigo)}
+                    <span class="avatar-name">${amigo.name}</span>
+                `;
+                consumersGrid.appendChild(consumerLabel);
+            });
         }
 
         function seleccionarPagador(id, element) {
@@ -668,9 +777,19 @@
 
         function mostrarSiguientePagador(nextPayersList) {
             const container = document.getElementById('nextPayerContainer');
+            const rouletteBtnContainer = document.getElementById('rouletteButtonContainer');
             container.innerHTML = '';
             
             if (nextPayersList && nextPayersList.length > 0) {
+                EMPATADOS = nextPayersList; 
+
+                // CORRECCIÓN: Si el array contiene 2 o más IDs empatados (Carlos, Sergio, Clara), activa el botón de la ruleta
+                if (nextPayersList.length >= 2) {
+                    rouletteBtnContainer.style.display = 'block';
+                } else {
+                    rouletteBtnContainer.style.display = 'none';
+                }
+
                 nextPayersList.forEach(id => {
                     const amigo = AMIGOS.find(a => a.id === id);
                     if (amigo) {
@@ -683,6 +802,8 @@
                     }
                 });
             } else {
+                EMPATADOS = [];
+                rouletteBtnContainer.style.display = 'none';
                 container.innerHTML = '<span>Sin datos suficientes</span>';
             }
         }
@@ -697,6 +818,102 @@
                     mostrarSiguientePagador(data.nextPayers);
                     generarEstadisticasReal(data);
                 });
+        }
+
+        // --- LÓGICA DE DIBUJO Y ANIMACIÓN DEL CANVAS DE LA RULETA ---
+        function dibujarRuleta(currentAngle) {
+            const canvas = document.getElementById('canvasWheel');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const numSlices = EMPATADOS.length;
+            const sliceAngle = (2 * Math.PI) / numSlices;
+            const radius = canvas.width / 2;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < numSlices; i++) {
+                const amigoId = EMPATADOS[i];
+                const amigo = AMIGOS.find(a => a.id === amigoId);
+                const name = amigo ? amigo.name : "???";
+
+                const startAngle = currentAngle + (i * sliceAngle);
+                const endAngle = startAngle + sliceAngle;
+
+                ctx.beginPath();
+                ctx.moveTo(radius, radius);
+                ctx.arc(radius, radius, radius - 5, startAngle, endAngle);
+                ctx.closePath();
+                ctx.fillStyle = COLORES_RULETA[i % COLORES_RULETA.length];
+                ctx.fill();
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+
+                ctx.save();
+                ctx.translate(radius, radius);
+                ctx.rotate(startAngle + sliceAngle / 2);
+                ctx.textAlign = "right";
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "bold 13px sans-serif";
+                ctx.shadowColor = "rgba(0, 0, 0, 0.4)";
+                ctx.shadowBlur = 4;
+                ctx.fillText(name, radius - 25, 5);
+                ctx.restore();
+            }
+
+            ctx.beginPath();
+            ctx.arc(radius, radius, 18, 0, 2 * Math.PI);
+            ctx.fillStyle = '#ffffff';
+            ctx.fill();
+            ctx.shadowBlur = 0;
+            ctx.strokeStyle = '#dfe6e9';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
+
+        function girarRuleta() {
+            if (ruletaGirando || EMPATADOS.length < 2) return;
+
+            ruletaGirando = true;
+            document.getElementById('btnSpin').disabled = true;
+            document.getElementById('rouletteResult').innerText = "Girando... 🔄";
+
+            const numSlices = EMPATADOS.length;
+            const sliceAngle = (2 * Math.PI) / numSlices;
+
+            const totalRotation = (Math.random() * 5 + 5) * 2 * Math.PI;
+            const duration = 4000; 
+            const startTime = performance.now();
+
+            function animateWheel(now) {
+                const elapsed = now - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                const easeOutProgress = 1 - Math.pow(1 - progress, 3);
+                const currentAngle = easeOutProgress * totalRotation;
+
+                dibujarRuleta(currentAngle);
+
+                if (progress < 1) {
+                    requestAnimationFrame(animateWheel);
+                } else {
+                    const finalAngleNormalized = currentAngle % (2 * Math.PI);
+                    
+                    const centerAngle = (3.5 * Math.PI - finalAngleNormalized) % (2 * Math.PI);
+                    let winnerIndex = Math.floor(centerAngle / sliceAngle);
+                    if (winnerIndex < 0) winnerIndex += numSlices;
+                    winnerIndex = winnerIndex % numSlices;
+
+                    const winnerId = EMPATADOS[winnerIndex];
+                    const winnerAmigo = AMIGOS.find(a => a.id === winnerId);
+                    
+                    document.getElementById('rouletteResult').innerHTML = `¡Le toca pagar a:<br><strong style="color:#ff7675; font-size:1.6rem;">🍦 ${winnerAmigo ? winnerAmigo.name : 'Alguien'} 🍦</strong>!`;
+                    
+                    ruletaGirando = false;
+                    document.getElementById('btnSpin').disabled = false;
+                }
+            }
+            requestAnimationFrame(animateWheel);
         }
     </script>
 </body>
