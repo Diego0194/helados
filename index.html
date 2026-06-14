@@ -40,7 +40,7 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
-            padding-bottom: 60px;
+            padding-bottom: 80px;
         }
 
         header {
@@ -169,6 +169,7 @@
 
         .bar-consumed { background: linear-gradient(90deg, #ff7675, #ff8a8a); }
         .bar-paid { background: linear-gradient(90deg, #2ecc71, #2eff86); }
+        .bar-voted { background: linear-gradient(90deg, #00cec9, #81ecec); }
 
         .stat-value {
             font-size: 0.85rem;
@@ -189,6 +190,303 @@
             font-size: 1.8rem;
             font-weight: 900;
             color: var(--primary-color);
+        }
+
+        /* --- SECCIÓN DE VOTACIONES DE HELADOS (MODAL) --- */
+        .icecream-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .icecream-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 16px;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .icecream-card:hover {
+            transform: translateY(-3px);
+            border-color: #00cec9;
+            box-shadow: 0 5px 10px rgba(0,206,201,0.1);
+        }
+
+        .icecream-card:active {
+            transform: scale(0.96);
+        }
+
+		.icecream-card.voted {
+			border: 3px solid #4CAF50 !important;
+			background-color: #E8F5E9 !important;
+			transform: scale(0.98);
+			box-shadow: 0 4px 10px rgba(74, 175, 80, 0.3);
+		}
+
+		.icecream-card.voted::after {
+			content: "✓";
+			position: absolute;
+			top: 4px;
+			right: 4px;
+			background-color: #4CAF50;
+			color: white;
+			width: 18px;
+			height: 18px;
+			border-radius: 50%;
+			font-size: 11px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-weight: bold;
+		}
+
+        .icecream-img {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 12px;
+            object-fit: cover;
+            margin-bottom: 6px;
+        }
+
+        .icecream-title {
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: var(--text-color);
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+
+        .icecream-price-tag {
+            font-size: 0.7rem;
+            color: #636e72;
+            margin-top: 2px;
+        }
+
+        /* --- NUEVOS ESTILOS PARA CONTROLES INTEGRADOS EN LA TARJETA DEL CATÁLOGO --- */
+        .icecream-card.selected-in-catalog {
+            border-color: var(--primary-color);
+            background-color: #fff5f5;
+        }
+
+        .catalog-counter-overlay {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid var(--primary-color);
+            border-radius: 20px;
+            padding: 2px 6px;
+            position: absolute;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            gap: 8px;
+            z-index: 5;
+        }
+
+        .btn-catalog-counter {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: none;
+            background: var(--primary-color);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+        }
+
+        .btn-catalog-counter:active {
+            background: var(--primary-hover);
+        }
+
+        .catalog-counter-value {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: var(--text-color);
+            min-width: 14px;
+            text-align: center;
+        }
+
+        /* --- PANEL DE HELADOS SELECCIONADOS (CARRITO) --- */
+        .selected-icecreams-list {
+            background: #f1f2f6;
+            border-radius: 14px;
+            padding: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .selected-item-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+            padding: 6px 12px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        .selected-item-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .selected-item-img {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            object-fit: cover;
+        }
+
+        .selected-item-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .selected-item-name {
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .selected-item-price {
+            font-size: 0.75rem;
+            color: #ff7675;
+        }
+
+        .counter-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-counter {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1px solid #dfe6e9;
+            background: white;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+
+        .btn-counter:active {
+            background: #f1f2f6;
+        }
+
+        .counter-value {
+            font-size: 0.9rem;
+            font-weight: bold;
+            min-width: 15px;
+            text-align: center;
+        }
+
+        .live-price-box {
+            text-align: center;
+            background: #ffeaa7;
+            padding: 12px;
+            border-radius: 14px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #2d3436;
+            margin-bottom: 20px;
+            border: 2px dashed #fdcb6e;
+        }
+
+        /* --- DISEÑO DE LOS PODIOS --- */
+        .top3-container {
+            background: #f1f2f6;
+            border-radius: 16px;
+            padding: 15px;
+            margin-top: 15px;
+            border: 1px dashed #b2bec3;
+        }
+
+        .top3-title {
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: var(--text-color);
+            margin-bottom: 10px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .top3-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            font-size: 0.9rem;
+        }
+
+        .top3-row:last-child {
+            border-bottom: none;
+        }
+
+        .top3-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .top3-medal {
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .top3-mini-img {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            object-fit: cover;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            background: #fff;
+        }
+
+        .top3-name {
+            font-weight: 600;
+        }
+
+        .top3-votes {
+            font-weight: bold;
+            color: #00cec9;
+            background: rgba(0, 206, 201, 0.1);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+        }
+
+        .top3-bought-tag {
+            color: #ff7675;
+            background: rgba(255, 118, 117, 0.1);
         }
 
         /* --- BOTONES --- */
@@ -215,6 +513,12 @@
             background-color: var(--primary-hover);
         }
 
+        .btn-vote-trigger {
+            background: linear-gradient(135deg, #00cec9 0%, #81ecec 100%);
+            box-shadow: 0 5px 15px rgba(0, 206, 201, 0.3);
+            font-size: 1.05rem;
+        }
+
         .btn-add-expense {
             background: #2ed573;
             box-shadow: 0 5px 15px rgba(46, 213, 115, 0.3);
@@ -226,6 +530,10 @@
             max-width: 468px;
             z-index: 99;
         }
+        .btn-add-expense:active {
+            background-color: #26af5f; 
+            transform: translateX(-50%) scale(1); 
+        }
 
         .btn-roulette {
             background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
@@ -233,6 +541,21 @@
             margin-top: 5px;
             padding: 12px 20px;
             font-size: 1rem;
+        }
+
+        .btn-reset {
+            background: #b2bec3;
+            box-shadow: 0 4px 10px rgba(178, 190, 195, 0.3);
+            padding: 10px 15px;
+            font-size: 0.9rem;
+            border-radius: 14px;
+            margin-top: 15px;
+            width: auto;
+            display: inline-flex;
+        }
+        
+        .btn-reset:hover {
+            background: #636e72;
         }
 
         /* --- DESPLEGABLE / MODAL FORMULARIO --- */
@@ -256,7 +579,7 @@
             width: 100%;
             max-width: 500px;
             border-radius: 24px 24px 0 0;
-            max-height: 85vh;
+            max-height: 90vh;
             overflow-y: auto;
             animation: slideUp 0.3s ease-out;
         }
@@ -307,8 +630,8 @@
 
         .face-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px 12px;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px 12px;
         }
 
         .face-option {
@@ -350,22 +673,6 @@
         .face-option.checked .avatar-name {
             color: #2ecc71;
             font-weight: bold;
-        }
-
-        .input-money {
-            width: 100%;
-            padding: 14px 16px;
-            font-size: 1.4rem;
-            border: 2px solid #dfe6e9;
-            border-radius: 14px;
-            outline: none;
-            text-align: center;
-            font-weight: bold;
-            color: var(--text-color);
-        }
-
-        .input-money:focus {
-            border-color: var(--primary-color);
         }
 
         .loading {
@@ -460,9 +767,15 @@
             </div>
         </div>
 
+        <button class="btn btn-vote-trigger" onclick="abrirVotacion()">
+            🗳️ Abrir Urna de Votos
+        </button>
+
+        <div id="topBoughtContainer"></div>
+
         <div class="card stats-section">
-            <h3>📊 ¿Quién ha comido más helados?</h3>
-            <div id="consumedStatsContainer"></div>
+          <h3>📊 ¿Quién ha comido más helados?</h3>
+          <div id="consumedStatsContainer"></div>
         </div>
 
         <div class="card stats-section">
@@ -479,18 +792,38 @@
         </div>
 
         <button class="btn btn-add-expense" onclick="abrirFormulario()">
-            ➕ Añadir un gasto
+            ➕ Registrar una Compra
         </button>
+    </div>
+
+    <div class="modal-overlay" id="modalVote" onclick="cerrarVotacionExterna(event)">
+        <div class="card form-panel" style="max-height: 90vh;">
+            <div class="modal-header">
+                <h2>Urna de Votación 🗳️</h2>
+                <button class="close-btn" onclick="cerrarVotacion()">✕</button>
+            </div>
+            <p style="font-size: 0.85rem; color:#636e72; margin-bottom: 15px;">
+                Haz click en un helado para guardar tu voto personal favorito en la base de datos.
+            </p>
+            
+            <div class="icecream-grid" id="votingIceCreamGrid"></div>
+            <div id="votesStatsContainer"></div>
+            <div id="top3Container"></div>
+            
+            <div style="text-align: center;">
+                <button class="btn btn-reset" onclick="reiniciarVotos()">🗑️ Reiniciar recuento</button>
+            </div>
+        </div>
     </div>
 
     <div class="modal-overlay" id="modalForm" onclick="cerrarFormularioExterna(event)">
         <div class="card form-panel">
             <div class="modal-header">
-                <h2>Añadir Nuevo Gasto 🍦</h2>
+                <h2>Registrar Compra 🍦</h2>
                 <button class="close-btn" onclick="cerrarFormulario()">✕</button>
             </div>
             
-            <div class="alert-success" id="successAlert">¡Compra guardada con éxito! 🎉</div>
+            <div class="alert-success" id="successAlert">¡Compra guardada en Google Sheets! 🎉</div>
             
             <form id="iceCreamForm" onsubmit="enviarDatos(event)">
                 <div class="form-group">
@@ -499,8 +832,17 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="amount">2. ¿Cuánto ha costado en total? (€)</label>
-                    <input type="number" id="amount" step="0.01" min="0" class="input-money" placeholder="0.00" required inputmode="decimal">
+                    <label>2. ¿Qué helados se han comprado?</label>
+                    <div class="icecream-grid" id="catalogIceCreamGrid"></div>
+                    
+                    <span style="font-size: 0.85rem; font-weight: bold; color: #636e72; display:block; margin-bottom: 8px;">Helados incluidos en el ticket:</span>
+                    <div class="selected-icecreams-list" id="selectedIceCreamsContainer">
+                        <p style="font-size:0.8rem; color:#b2bec3; text-align:center; padding: 10px;">Ningún helado seleccionado. Haz click arriba.</p>
+                    </div>
+                </div>
+
+                <div class="live-price-box">
+                    Importe Final: <span id="liveTotalPriceDisplay">0.00€</span>
                 </div>
 
                 <div class="form-group">
@@ -508,9 +850,9 @@
                     <div class="face-grid" id="consumersGrid"></div>
                 </div>
 
-                <div class="loading" id="loader">Enviando a Google Sheets... 🚀</div>
+                <div class="loading" id="loader">Guardando fila e importe en Google Sheets... 🚀</div>
                 <button type="submit" class="btn" style="background-color: #2ecc71; box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);">
-                    Confirmar y Guardar ✨
+                    Confirmar y Guardar Compra ✨
                 </button>
             </form>
         </div>
@@ -534,41 +876,94 @@
     </div>
 
     <div class="global-loading" id="globalLoader">
-        🍦 Iniciando IceCream Tracker...<br><span style="font-size: 0.9rem; font-weight: normal; color: #b2bec3;">Cargando datos reales desde Google Sheets...</span>
+        🍦 Iniciando IceCream Tracker...<br><span style="font-size: 0.9rem; font-weight: normal; color: #b2bec3;">Cargando base de datos desde Google Sheets...</span>
     </div>
 
     <script>
-        // URL DE TU NUEVO GOOGLE APPS SCRIPT CONFIGURADA
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyUy4_fP-opOyxyjukMEvVvMr6bqJ8_LQStG4hXUrnHOvaMcu-tLLzCsrns6_-hG8C3/exec";
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyLhHnatvPAhG7BhuDIbFhKbbJbdrCOEJ8imShxabTExG4cr2BtaMLSXQnT7hWgYAw7/exec";
+
+        // Catálogo Base estático de IDs e imágenes
+        const CATALOGO_HELADOS = [
+            { id: "Almendrado", title: "Almendrado" },
+            { id: "Blanco", title: "Blanco" },
+            { id: "Cacahuete", title: "Cacahuete" },
+            { id: "ConoCaramelo", title: "Cono Caramelo" },
+            { id: "ConoChocoNata", title: "Cono Choco Nata" },
+            { id: "ConoFresa", title: "Cono Fresa" },
+            { id: "ConoNata", title: "Cono Nata" },
+            { id: "ConoVainilla", title: "Cono Vainilla" },
+            { id: "CrocanChoc", title: "Crocan Choc" },
+            { id: "DochiAbuela", title: "Dochi Abuela" },
+            { id: "DochiCheesecake", title: "Dochi Cheesecake" },
+            { id: "MangoBlanco", title: "Mango Blanco" },
+            { id: "MiniAlmendrado", title: "Mini Almendrado" },
+            { id: "MiniBombon", title: "Mini Bombón" },
+            { id: "MiniBoom", title: "Mini Boom" },
+            { id: "MiniChocoCream", title: "Mini Choco Cream" },
+            { id: "MiniConoNata", title: "Mini Cono Nata" },
+            { id: "MiniConoSin", title: "Mini Cono Sin Azúcar" },
+            { id: "MiniNata", title: "Mini Nata" },
+            { id: "MiniNocciola", title: "Mini Nocciola" },
+            { id: "MiniPistacho", title: "Mini Pistacho" },
+            { id: "MiniSin", title: "Mini Sin Azúcar" },
+            { id: "MiniVainilla", title: "Mini Vainilla" },
+            { id: "MochiCoco", title: "Mochi Coco" },
+            { id: "MochiMango", title: "Mochi Mango" },
+            { id: "NataSin", title: "Nata Sin Azúcar" },
+            { id: "Negro", title: "Negro" },
+            { id: "Pistacho", title: "Pistacho" },
+            { id: "SuperNata", title: "Super Nata" },
+            { id: "TripleChocolate", title: "Triple Chocolate" }
+        ];
 
         let AMIGOS = [];
         let EMPATADOS = []; 
+        let PRECIOS_HOJA = {}; // Cargado dinámicamente desde SheetsAcceso Accion
+        let HELADOS_COMPRADOS_TICKET = {}; // Estructura id -> cantidad para la compra activa
         let pagadorSeleccionado = null;
         let ruletaGirando = false;
 
         const COLORES = [
-            'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)',
-            'linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)',
-            'linear-gradient(135deg, #ffcf71 0%, #2376dd 100%)',
-            'linear-gradient(135deg, #70f570 0%, #49c628 100%)',
-            'linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%)',
-            'linear-gradient(135deg, #fccb90 0%, #d5d114 100%)',
-            'linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)',
-            'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
+          'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)',
+          'linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)',
+          'linear-gradient(135deg, #ffcf71 0%, #2376dd 100%)',
+          'linear-gradient(135deg, #70f570 0%, #49c628 100%)',
+          'linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%)',
+          'linear-gradient(135deg, #fccb90 0%, #d5d114 100%)',
+          'linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)',
+          'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
         ];
 
         const COLORES_RULETA = ['#ff7675', '#74b9ff', '#2ecc71', '#fdcb6e', '#a29bfe', '#e84393', '#00cec9', '#ffb142'];
 
         window.addEventListener('DOMContentLoaded', () => {
+            renderGridsEstaticas();
             inicializarApp();
         });
 
-        function inicializarApp() {
-            if (WEB_APP_URL === "TU_URL_DE_GOOGLE_APPS_SCRIPT_AQUI" || WEB_APP_URL.trim() === "") {
-                document.getElementById('globalLoader').innerHTML = "⚠️ <strong>Falta configurar la URL</strong>";
-                return;
-            }
+        function renderGridsEstaticas() {
+            // Renderizar la cuadrícula de votos personales
+            const votingGrid = document.getElementById('votingIceCreamGrid');
+            votingGrid.innerHTML = CATALOGO_HELADOS.map(h => `
+                <div class="icecream-card" data-id="${h.id}" onclick="votarHelado('${h.id}', this)">
+                    <img src="media/helados/${h.id}.png" class="icecream-img" alt="${h.title}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\'><text y=\'60\' x=\'25\' font-size=\'50\'>🍦</text></svg>';">
+                    <span class="icecream-title">${h.title}</span>
+                </div>
+            `).join('');
 
+            // Renderizar la cuadrícula de catálogo para añadir compras
+            const catalogGrid = document.getElementById('catalogIceCreamGrid');
+            catalogGrid.innerHTML = CATALOGO_HELADOS.map(h => `
+                <div class="icecream-card" id="catalog-card-${h.id}" onclick="agregarHeladoAlTicket('${h.id}')">
+                    <img src="media/helados/${h.id}.png" class="icecream-img" alt="${h.title}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\'><text y=\'60\' x=\'25\' font-size=\'50\'>🍦</text></svg>';">
+                    <span class="icecream-title">${h.title}</span>
+                    <span class="icecream-price-tag" id="price-tag-${h.id}">0.00€</span>
+                    <div id="catalog-counter-box-${h.id}"></div>
+                </div>
+            `).join('');
+        }
+
+        function inicializarApp() {
             let urlLimpia = WEB_APP_URL.trim();
             urlLimpia += urlLimpia.includes('?') ? '&action=getInitData' : '?action=getInitData';
 
@@ -578,19 +973,34 @@
                     if (data.error) throw new Error(data.error);
                     
                     AMIGOS = data.friends;
+                    PRECIOS_HOJA = data.prices || {};
+                    
                     document.getElementById('globalLoader').style.display = 'none';
                     document.getElementById('mainContainer').style.display = 'flex';
                     
-                    renderGrids();
+                    actualizarEtiquetasPreciosCatalogo();
+                    renderAmigosGrids();
                     mostrarSiguientePagador(data.nextPayers);
                     generarEstadisticasReal(data);
+                    verificarVotoGuardado();
                 })
                 .catch(err => {
                     document.getElementById('globalLoader').innerHTML = "❌ Error al conectar con Google Sheets.<br><span style='font-size:0.8rem; color:red;'>" + err.message + "</span>";
                 });
         }
 
+        function actualizarEtiquetasPreciosCatalogo() {
+            CATALOGO_HELADOS.forEach(h => {
+                const tag = document.getElementById(`price-tag-${h.id}`);
+                if (tag && PRECIOS_HOJA[h.id] !== undefined) {
+                    tag.innerText = `${PRECIOS_HOJA[h.id].toFixed(2)}€`;
+                }
+            });
+        }
+
         function abrirFormulario() {
+            HELADOS_COMPRADOS_TICKET = {};
+            actualizarInterfazTicket();
             document.getElementById('modalForm').style.display = 'flex';
             document.body.style.overflow = 'hidden';
         }
@@ -604,7 +1014,20 @@
             if (e.target.id === 'modalForm') cerrarFormulario();
         }
 
-        // --- FUNCIONES DE CONTROL DE LA RULETA ---
+        function abrirVotacion() {
+            document.getElementById('modalVote').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function cerrarVotacion() {
+            document.getElementById('modalVote').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function cerrarVotacionExterna(e) {
+            if (e.target.id === 'modalVote') cerrarVotacion();
+        }
+
         function abrirRuleta() {
             if (EMPATADOS.length < 2) return;
             document.getElementById('modalRoulette').style.display = 'flex';
@@ -623,10 +1046,167 @@
             if (e.target.id === 'modalRoulette') cerrarRuleta();
         }
 
-        // --- RENDERIZADO DE GRÁFICOS CON MÉTRICAS REALES ---
+        function obtenerUsuarioID() {
+            let uid = localStorage.getItem('icecream_user_id');
+            if (!uid) {
+                uid = 'usr_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('icecream_user_id', uid);
+            }
+            return uid;
+        }
+
+        /* --- LÓGICA DE GESTIÓN DEL TICKET / COMPRA --- */
+        function agregarHeladoAlTicket(id) {
+            // Si ya hay un control activo en la tarjeta, evitamos el click genérico del contenedor
+            if (!HELADOS_COMPRADOS_TICKET[id]) {
+                HELADOS_COMPRADOS_TICKET[id] = 1;
+                actualizarInterfazTicket();
+            }
+        }
+
+        function cambiarCantidadTicket(id, delta) {
+            if (!HELADOS_COMPRADOS_TICKET[id]) return;
+            HELADOS_COMPRADOS_TICKET[id] += delta;
+            if (HELADOS_COMPRADOS_TICKET[id] <= 0) {
+                delete HELADOS_COMPRADOS_TICKET[id];
+            }
+            actualizarInterfazTicket();
+        }
+
+        function actualizarInterfazTicket() {
+            const container = document.getElementById('selectedIceCreamsContainer');
+            const totalDisplay = document.getElementById('liveTotalPriceDisplay');
+            
+            const keys = Object.keys(HELADOS_COMPDON_TICKET = HELADOS_COMPRADOS_TICKET);
+            const allKeys = CATALOGO_HELADOS.map(h => h.id);
+            
+            // 1. Sincronizar visualmente las tarjetas de la cuadrícula superior
+            allKeys.forEach(id => {
+                const card = document.getElementById(`catalog-card-${id}`);
+                const counterBox = document.getElementById(`catalog-counter-box-${id}`);
+                
+                if (card && counterBox) {
+                    const cantidad = HELADOS_COMPRADOS_TICKET[id] || 0;
+                    if (cantidad > 0) {
+                        card.classList.add('selected-in-catalog');
+                        counterBox.innerHTML = `
+                            <div class="catalog-counter-overlay" onclick="event.stopPropagation();">
+                                <button type="button" class="btn-catalog-counter" onclick="cambiarCantidadTicket('${id}', -1); event.stopPropagation();">-</button>
+                                <span class="catalog-counter-value">${cantidad}</span>
+                                <button type="button" class="btn-catalog-counter" onclick="cambiarCantidadTicket('${id}', 1); event.stopPropagation();">+</button>
+                            </div>
+                        `;
+                    } else {
+                        card.classList.remove('selected-in-catalog');
+                        counterBox.innerHTML = '';
+                    }
+                }
+            });
+
+            // 2. Renderizar la lista resumen inferior (carrito)
+            if (keys.length === 0) {
+                container.innerHTML = `<p style="font-size:0.8rem; color:#b2bec3; text-align:center; padding: 10px;">Ningún helado seleccionado. Haz click arriba.</p>`;
+                totalDisplay.innerText = "0.00€";
+                return;
+            }
+            
+            let html = "";
+            let totalAcumulado = 0;
+            
+            keys.forEach(id => {
+                const hBase = CATALOGO_HELADOS.find(h => h.id === id);
+                const cantidad = HELADOS_COMPRADOS_TICKET[id];
+                const precioUnitario = PRECIOS_HOJA[id] || 0;
+                const subtotal = precioUnitario * cantidad;
+                totalAcumulado += subtotal;
+                
+                html += `
+                    <div class="selected-item-row">
+                        <div class="selected-item-left">
+                            <img src="media/helados/${id}.png" class="selected-item-img" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'30\' height=\'30\'><text y=\'22\' x=\'4\' font-size=\'20\'>🍦</text></svg>';">
+                            <div class="selected-item-info">
+                                <span class="selected-item-name">${hBase ? hBase.title : id}</span>
+                                <span class="selected-item-price">${subtotal.toFixed(2)}€ (${precioUnitario.toFixed(2)}€/ud)</span>
+                            </div>
+                        </div>
+                        <div class="counter-controls">
+                            <button type="button" class="btn-counter" onclick="cambiarCantidadTicket('${id}', -1)">-</button>
+                            <span class="counter-value">${cantidad}</span>
+                            <button type="button" class="btn-counter" onclick="cambiarCantidadTicket('${id}', 1)">+</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            totalDisplay.innerText = `${totalAcumulado.toFixed(2)}€`;
+        }
+
+        function votarHelado(iceCreamId, elementoCard) {
+            const usuarioID = obtenerUsuarioID();
+            const heladoAnterior = localStorage.getItem('heladoVotado');
+
+            if (heladoAnterior === iceCreamId) return;
+
+            document.querySelectorAll('#votingIceCreamGrid .icecream-card.voted').forEach(tarjeta => {
+                tarjeta.classList.remove('voted');
+            });
+            if (elementoCard) {
+                elementoCard.classList.add('voted');
+            }
+
+            localStorage.setItem('heladoVotado', iceCreamId);
+
+            const data = {
+                action: "voteIceCream",
+                usuarioId: usuarioID,
+                iceCreamId: iceCreamId
+            };
+
+            fetch(WEB_APP_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "text/plain" },
+                body: JSON.stringify(data)
+            })
+            .then(() => {
+                recargarDatosSilencioso();
+            })
+            .catch(error => console.error("Error:", error));
+        }
+
+        function verificarVotoGuardado() {
+            const heladoGuardado = localStorage.getItem('heladoVotado');
+            if (heladoGuardado) {
+                const tarjetaVotada = document.querySelector(`#votingIceCreamGrid [data-id="${heladoGuardado}"]`);
+                if (tarjetaVotada) {
+                    tarjetaVotada.classList.add('voted');
+                }
+            }
+        }
+
+		function reiniciarVotos() {
+            if (!confirm("¿Seguro que quieres borrar la urna de votos actuales?")) return;
+            const data = { action: "resetVotes" };
+
+            fetch(WEB_APP_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            })
+            .then(() => {
+                localStorage.removeItem('heladoVotado');
+                document.querySelectorAll('#votingIceCreamGrid .icecream-card.voted').forEach(tarjeta => {
+                    tarjeta.classList.remove('voted');
+                });
+                recargarDatosCompletos();
+            })
+            .catch(err => console.error("Error al reiniciar votos:", err));
+        }
+
         function generarEstadisticasReal(data) {
             const amigosConDatos = data.friends;
-            
             const maxConsumed = Math.max(...amigosConDatos.map(a => a.totalConsumed), 1);
             const maxPaid = Math.max(...amigosConDatos.map(a => a.totalPaid), 1);
 
@@ -658,6 +1238,88 @@
             document.getElementById('consumedStatsContainer').innerHTML = consumedHTML;
             document.getElementById('paidStatsContainer').innerHTML = paidHTML;
             
+			// --- PROCESADO: PODIO 1 (URNAS SUBJETIVAS) ---
+            const votosActuales = data.votes || {};
+			const heladosLista = Object.keys(votosActuales); 
+			const totalVotosHelados = heladosLista.map(id => votosActuales[id] || 0);
+			const maxVotos = Math.max(...totalVotosHelados, 1);
+
+			let votesHTML = '';
+            let arrayParaTop3 = [];
+
+			heladosLista.forEach(id => {
+				const numVotos = votosActuales[id] || 0;
+				let pctVotos = (numVotos / maxVotos) * 100;
+				
+                if(numVotos > 0) {
+                    arrayParaTop3.push({ id: id, votos: numVotos });
+                }
+
+				votesHTML += `
+					<div class="stat-row">
+						<span class="mini-name" style="font-weight: bold;">${id}</span>
+						<div class="progress-bar-container">
+							<div class="progress-bar bar-voted" style="width: ${pctVotos}%"></div>
+						</div>
+						<span class="stat-value">${numVotos} votos</span>
+					</div>`;
+			});
+			document.getElementById('votesStatsContainer').innerHTML = votesHTML;
+
+            const top3Container = document.getElementById('top3Container');
+            if (arrayParaTop3.length > 0) {
+                arrayParaTop3.sort((a, b) => b.votos - a.votos);
+                const top3Seleccionados = arrayParaTop3.slice(0, 3);
+                const medallas = ["🥇", "🥈", "🥉"];
+                
+                let top3HTML = `<div class="top3-container"><div class="top3-title">🗳️ Urna: Favoritos del Grupo</div>`;
+                top3Seleccionados.forEach((helado, index) => {
+                    top3HTML += `
+                        <div class="top3-row">
+                            <div class="top3-left">
+                                <span class="top3-medal">${medallas[index]}</span>
+                                <img src="media/helados/${helado.id}.png" class="top3-mini-img" alt="${helado.id}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'30\' height=\'30\'><text y=\'22\' x=\'4\' font-size=\'20\'>🍦</text></svg>';">
+                                <span class="top3-name">${helado.id}</span>
+                            </div>
+                            <span class="top3-votes">${helado.votos} ${helado.votos === 1 ? 'voto' : 'votos'}</span>
+                        </div>
+                    `;
+                });
+                top3HTML += `</div>`;
+                top3Container.innerHTML = top3HTML;
+            } else {
+                top3Container.innerHTML = ''; 
+            }
+
+            // --- NUEVO PROCESADO: PODIO 2 (COMPRAS REALES HISTÓRICAS) ---
+            const topBoughtContainer = document.getElementById('topBoughtContainer');
+            const comprasRealesMap = data.topBoughtIceCreams || {};
+            const listaComprasReales = Object.keys(comprasRealesMap).map(id => ({ id: id, total: comprasRealesMap[id] }));
+            
+            if (listaComprasReales.length > 0) {
+                listaComprasReales.sort((a, b) => b.total - a.total);
+                const topRealSeleccionados = listaComprasReales.slice(0, 3);
+                const medallas = ["🥇", "🥈", "🥉"];
+                
+                let boughtHTML = `<div class="card top3-container" style="margin-top:0;"><div class="top3-title">🏆 Los helados más comprados</div>`;
+                topRealSeleccionados.forEach((helado, index) => {
+                    boughtHTML += `
+                        <div class="top3-row">
+                            <div class="top3-left">
+                                <span class="top3-medal">${medallas[index]}</span>
+                                <img src="media/helados/${helado.id}.png" class="top3-mini-img" alt="${helado.id}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'30\' height=\'30\'><text y=\'22\' x=\'4\' font-size=\'20\'>🍦</text></svg>';">
+                                <span class="top3-name">${helado.id}</span>
+                            </div>
+                            <span class="top3-votes top3-bought-tag">${helado.total} comprados</span>
+                        </div>
+                    `;
+                });
+                boughtHTML += `</div>`;
+                topBoughtContainer.innerHTML = boughtHTML;
+            } else {
+                topBoughtContainer.innerHTML = '';
+            }
+
             const totalInvertido = data.globalTotalPaid || 0;
             const totalHelados = data.globalTotalHelados || 0;
             const avgGlobal = totalHelados > 0 ? (totalInvertido / totalHelados) : 0;
@@ -671,12 +1333,12 @@
             const estiloFondoFallback = `background: ${COLORES[colorIndex]}`;
 
             return `<div class="avatar-box" style="${estiloFondoFallback}">
-                        <img src="media/${amigo.id}.jpg" style="width:100%; height:100%; border-radius:50%; object-fit:cover;" 
+                        <img src="media/${amigo.id}.png" style="width:100%; height:100%; border-radius:50%; object-fit:cover;" 
                              onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('beforeend', '${inicial}');"/>
                     </div>`;
         }
 
-        function renderGrids() {
+        function renderAmigosGrids() {
             const payerGrid = document.getElementById('payerGrid');
             const consumersGrid = document.getElementById('consumersGrid');
 
@@ -727,7 +1389,12 @@
                 return;
             }
 
-            const amount = parseFloat(document.getElementById('amount').value);
+            const keysTicket = Object.keys(HELADOS_COMPRADOS_TICKET);
+            if (keysTicket.length === 0) {
+                alert("Por favor, selecciona al menos un helado del catálogo.");
+                return;
+            }
+
             const checkboxes = document.querySelectorAll('input[name="consumers"]:checked');
             const paraQuien = Array.from(checkboxes).map(cb => cb.value);
 
@@ -736,11 +1403,25 @@
                 return;
             }
 
+            // Construir el array plano expandido de helados segun su cantidad
+            let listaHeladosPlana = [];
+            let importeFinalTotal = 0;
+            
+            keysTicket.forEach(id => {
+                const cantidad = HELADOS_COMPRADOS_TICKET[id];
+                const precioUnit = PRECIOS_HOJA[id] || 0;
+                for(let i = 0; i < cantidad; i++) {
+                    listaHeladosPlana.push(id);
+                    importeFinalTotal += precioUnit;
+                }
+            });
+
             const data = {
                 action: "addPurchase",
                 payer: pagadorSeleccionado,
-                amount: amount,
-                consumers: paraQuien
+                amount: importeFinalTotal.toFixed(2), // Enviamos el coste calculado automáticamente
+                consumers: paraQuien,
+                iceCreams: listaHeladosPlana // Array de helados mapeado
             };
 
             const loader = document.getElementById('loader');
@@ -762,6 +1443,7 @@
                     el.classList.remove('checked');
                 });
                 pagadorSeleccionado = null;
+                HELADOS_COMPRADOS_TICKET = {};
                 
                 setTimeout(() => {
                     document.getElementById('successAlert').style.display = 'none';
@@ -782,13 +1464,7 @@
             
             if (nextPayersList && nextPayersList.length > 0) {
                 EMPATADOS = nextPayersList; 
-
-                // CORRECCIÓN: Si el array contiene 2 o más IDs empatados (Carlos, Sergio, Clara), activa el botón de la ruleta
-                if (nextPayersList.length >= 2) {
-                    rouletteBtnContainer.style.display = 'block';
-                } else {
-                    rouletteBtnContainer.style.display = 'none';
-                }
+                rouletteBtnContainer.style.display = (nextPayersList.length >= 2) ? 'block' : 'none';
 
                 nextPayersList.forEach(id => {
                     const amigo = AMIGOS.find(a => a.id === id);
@@ -820,7 +1496,16 @@
                 });
         }
 
-        // --- LÓGICA DE DIBUJO Y ANIMACIÓN DEL CANVAS DE LA RULETA ---
+        function recargarDatosSilencioso() {
+            let urlLimpia = WEB_APP_URL.trim();
+            urlLimpia += urlLimpia.includes('?') ? '&action=getInitData' : '?action=getInitData';
+            fetch(urlLimpia)
+                .then(response => response.json())
+                .then(data => {
+                    generarEstadisticasReal(data);
+                });
+        }
+
         function dibujarRuleta(currentAngle) {
             const canvas = document.getElementById('canvasWheel');
             if (!canvas) return;
@@ -898,7 +1583,6 @@
                     requestAnimationFrame(animateWheel);
                 } else {
                     const finalAngleNormalized = currentAngle % (2 * Math.PI);
-                    
                     const centerAngle = (3.5 * Math.PI - finalAngleNormalized) % (2 * Math.PI);
                     let winnerIndex = Math.floor(centerAngle / sliceAngle);
                     if (winnerIndex < 0) winnerIndex += numSlices;
